@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-# Add a Sitemap line here after setting SITE_URL in site.config.js
+Sitemap: https://bodymetricguide.kothavishnuteja.workers.dev/sitemap.xml

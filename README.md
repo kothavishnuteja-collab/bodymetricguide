@@ -19,7 +19,7 @@ A static website with six health and body-measurement calculators. Plain HTML, C
 
 ## Pages
 
-Home, Healthy Weight Range, BMI Calculator, Waist-to-Height, Protein Needs, Weight Progress, Body Measurement Tracker, About, Privacy, Terms, Medical Disclaimer, Contact, 404, plus `robots.txt` (and `sitemap.xml` once `SITE_URL` is set).
+Home; the six calculators (`/healthy-weight/`, `/bmi-calculator/`, `/waist-to-height/`, `/protein-calculator/`, `/weight-progress/`, `/body-measurements/`); a Guides hub (`/guides/`) with four articles (in `src/guides.js`); About, Privacy, Terms, Medical Disclaimer, Contact; `404.html`; `robots.txt`; `sitemap.xml`. 18 pages in total.
 
 ## Preview on your computer
 
@@ -36,6 +36,7 @@ Do not double-click the HTML files. Use the preview command so links work.
 ## Run the tests
 
 - `npm test` runs the formula tests, builds the site and checks all pages and links.
+- Optional real-browser audit (accessibility scan with axe-core, reset buttons, units, localStorage, CSV): needs Python Playwright (`pip install playwright`, `playwright install chromium`) and `npm install axe-core`; run `node serve.js`, then `python3 tests/audit.py`.
 - Optional browser-simulation test: `npm install jsdom --no-save`, then run `node serve.js` in one terminal and `node tests/dom.test.js` in another. This uses a simulated browser, not a real one.
 
 ## Publish with Cloudflare Pages and GitHub
@@ -53,8 +54,9 @@ Do not double-click the HTML files. Use the preview command so links work.
 
 ## Before you launch (to do)
 
-- Set `SITE_URL` and `CONTACT_EMAIL` in `site.config.js`. Until then, canonical tags and the sitemap are intentionally left out, and the Contact page says details are not yet published.
-- Open every reference link and confirm it still works and says what the page claims. Verified during the build: the NICE NG246 page and the NHS waist-to-height calculator. **Not verified:** the WHO, CDC and NHS BMI/protein links, so check these yourself.
+- `SITE_URL` is set to `https://bodymetricguide.kothavishnuteja.workers.dev`. If you move to your own domain, change it in `site.config.js` and redeploy.
+- Consider adding a real `CONTACT_EMAIL` in `site.config.js` (the Contact page currently offers a GitHub issues link). Ad networks usually expect a clear contact method.
+- References were checked against live search results when written: WHO obesity fact sheet, CDC adult BMI categories, NICE NG246, the NHS waist-to-height calculator and the Mersey Care NHS protein page. Please re-open each link now and then. No NIH page is cited because none was verified.
 - Have the legal pages (privacy, terms) reviewed. They are plain-language drafts, not legal advice.
 - Submit the sitemap in Google Search Console after launch.
 
@@ -65,7 +67,11 @@ Each tool page and the homepage contain an empty, hidden `<aside class="adslot">
 ## Known limitations
 
 - Tested with automated unit tests and a simulated browser (jsdom). It was **not** tested in real browsers or on real phones; please try it on your own devices.
-- Colour contrast and keyboard behaviour were designed for but not audited with a tool such as Lighthouse.
+- Accessibility was scanned with axe-core in Chromium (WCAG 2 A/AA rules) but not by a human with a screen reader. Lighthouse and Safari/Firefox were not run.
 - Tracker data is per browser and does not sync.
 - Protein ranges are fixed educational assumptions; edit `PROTEIN` in `assets/js/core.js` to change them.
 - Reference links need your manual check (see above).
+
+## Cloudflare Workers note
+
+The live site runs on Cloudflare Workers (workers.dev). This project does not include a `wrangler` config file, so your existing Cloudflare settings and any `wrangler.jsonc` already in your repository are left alone. If your Worker serves `dist/` as static assets, check that your config has `not_found_handling` set to `404-page` so `404.html` is used for missing pages.

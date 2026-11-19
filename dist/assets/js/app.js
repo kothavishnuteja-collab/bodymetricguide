@@ -45,22 +45,22 @@
     'healthy-weight': function (form, out) {
       var e = []; readAge(form, e); var h = readHeight(form, e); if (showErrors(form, e)) { out.innerHTML = ''; return; }
       var r = C.healthyRange(h);
-      out.innerHTML = '<p class="big">' + f1(r.lowKg) + ' – ' + f1(r.highKg) + ' kg</p><p class="big">' + f1(C.kgToLb(r.lowKg)) + ' – ' + f1(C.kgToLb(r.highKg)) + ' lb</p><p>Height entered: ' + esc(heightText(h, form)) + '.</p><p>This is a broad, BMI-based screening range (BMI 18.5–24.9) for adults. It is not an individualised ideal weight, and weights outside it are not automatically unhealthy.</p>';
+      out.innerHTML = '<p class="r-label">Weight range for BMI 18.5–24.9</p><p class="big">' + f1(r.lowKg) + ' – ' + f1(r.highKg) + ' kg</p><p class="big">' + f1(C.kgToLb(r.lowKg)) + ' – ' + f1(C.kgToLb(r.highKg)) + ' lb</p><p>Height entered: ' + esc(heightText(h, form)) + '.</p><p>This is a broad, BMI-based screening range (BMI 18.5–24.9) for adults. It is not an individualised ideal weight, and weights outside it are not automatically unhealthy.</p>';
     },
     'bmi': function (form, out) {
       var e = []; readAge(form, e); var h = readHeight(form, e), w = readWeight(form, e, 'weight', 'Weight'); if (showErrors(form, e)) { out.innerHTML = ''; return; }
       var b = C.bmi(w, h), pos = Math.max(0, Math.min(100, (b - 15) / 20 * 100));
-      out.innerHTML = '<p class="big">BMI ' + f1(b) + '</p><p><strong>' + C.bmiCategory(b) + '</strong> (adult screening category)</p><div class="scale" role="img" aria-label="BMI position on a scale from 15 to 35"><i style="left:' + pos + '%"></i></div><div class="scale-labels"><span>15</span><span>18.5</span><span>25</span><span>30</span><span>35+</span></div><p>BMI is a screening measure. It does not measure body fat directly, cannot tell muscle from fat, and does not show where fat is stored. These categories are for adults and must not be used for children or teenagers.</p>';
+      out.innerHTML = '<p class="r-label">Your BMI</p><p class="big">' + f1(b) + '</p><p class="chip">' + C.bmiCategory(b) + '</p><p class="r-note">Adult screening category</p><div class="scale bmi" role="img" aria-label="BMI position on a scale from 15 to 35"><i style="left:' + pos + '%"></i></div><div class="scale-labels"><span style="left:0">15</span><span style="left:17.5%">18.5</span><span style="left:50%">25</span><span style="left:75%">30</span><span style="left:100%">35+</span></div><p>BMI is a screening measure. It does not measure body fat directly, cannot tell muscle from fat, and does not show where fat is stored. These categories are for adults and must not be used for children or teenagers.</p>';
     },
     'waist-to-height': function (form, out) {
       var e = []; var h = readHeight(form, e), w = readLen(form, e, 'waist', 'Waist'); if (!e.length && w >= h) e.push('Waist: this is not smaller than your height. Please check both values.'); if (showErrors(form, e)) { out.innerHTML = ''; return; }
       var r = C.whtr(w, h), band = C.whtrBand(r), pos = Math.max(0, Math.min(100, (r - 0.3) / 0.4 * 100));
-      out.innerHTML = '<p class="big">Ratio ' + r.toFixed(2) + '</p><p><strong>' + band.label + '</strong></p><p>' + band.text + '</p><div class="scale" role="img" aria-label="Ratio position on a scale from 0.30 to 0.70"><i style="left:' + pos + '%"></i></div><div class="scale-labels"><span>0.30</span><span>0.40</span><span>0.50</span><span>0.60</span><span>0.70</span></div><p>A ratio of 0.5 is a practical screening threshold, not a diagnosis.</p>';
+      out.innerHTML = '<p class="r-label">Your waist-to-height ratio</p><p class="big">' + r.toFixed(2) + '</p><p class="chip">Band: ' + band.label + '</p><p>' + band.text + '</p><div class="scale" role="img" aria-label="Ratio position on a scale from 0.30 to 0.70"><i style="left:' + pos + '%"></i></div><div class="scale-labels"><span style="left:0">0.30</span><span style="left:25%">0.40</span><span style="left:50%">0.50</span><span style="left:75%">0.60</span><span style="left:100%">0.70</span></div><p>A ratio of 0.5 is a practical screening threshold, not a diagnosis.</p>';
     },
     'protein': function (form, out) {
       var e = []; var kg = readWeight(form, e, 'weight', 'Body weight'); if (showErrors(form, e)) { out.innerHTML = ''; return; }
       var key = form.elements.goal.value, p = C.PROTEIN[key], r = C.protein(kg, key), same = p.lo === p.hi;
-      out.innerHTML = '<p class="big">' + (same ? Math.round(r.lo) : Math.round(r.lo) + ' – ' + Math.round(r.hi)) + ' g per day</p><p>Calculation: ' + f1(kg) + ' kg × ' + (same ? p.lo : p.lo + '–' + p.hi) + ' g/kg/day (' + esc(p.label) + ').</p><p>This is a broad educational estimate, not a prescription. Protein needs can differ with age, health conditions, pregnancy, kidney disease and other circumstances. More protein is not always better. Ask a qualified professional if you have a medical condition.</p>';
+      out.innerHTML = '<p class="r-label">Estimated daily protein</p><p class="big">' + (same ? Math.round(r.lo) : Math.round(r.lo) + ' – ' + Math.round(r.hi)) + ' g per day</p><p>Calculation: ' + f1(kg) + ' kg × ' + (same ? p.lo : p.lo + '–' + p.hi) + ' g/kg/day (' + esc(p.label) + ').</p><p>This is a broad educational estimate, not a prescription. Protein needs can differ with age, health conditions, pregnancy, kidney disease and other circumstances. More protein is not always better. Ask a qualified professional if you have a medical condition.</p>';
     },
     'weight-progress': function (form, out) {
       var e = [], g = null; var s = readWeight(form, e, 'start', 'Starting weight'), c = readWeight(form, e, 'current', 'Current weight');
@@ -70,7 +70,7 @@
       if (d1 !== null && d2 !== null && d2 < d1) e.push('Current date must be on or after the start date.');
       if (showErrors(form, e)) { out.innerHTML = ''; return; }
       var r = C.progress(s, c, g, d1, d2), imp = val(form, 'wunit') === 'lb', k = imp ? C.kgToLb : function (x) { return x; }, u = imp ? 'lb' : 'kg', sign = function (n) { return (n > 0 ? '+' : '') + f1(n); };
-      var html = '<p class="big">' + sign(k(r.change)) + ' ' + u + ' (' + sign(r.pct) + '%)</p><p>Time elapsed: ' + r.days + ' day' + (r.days === 1 ? '' : 's') + (r.days >= 7 ? ' (about ' + f1(r.days / 7) + ' weeks)' : '') + '.</p>';
+      var html = '<p class="r-label">Total weight change</p><p class="big">' + sign(k(r.change)) + ' ' + u + ' (' + sign(r.pct) + '%)</p><p>Time elapsed: ' + r.days + ' day' + (r.days === 1 ? '' : 's') + (r.days >= 7 ? ' (about ' + f1(r.days / 7) + ' weeks)' : '') + '.</p>';
       html += r.perWeek !== null ? '<p>Average change: ' + sign(k(r.perWeek)) + ' ' + u + ' per week. Short periods give unreliable averages because weight naturally varies day to day.</p>' : '<p>Choose different dates to see an average weekly change.</p>';
       if (g !== null) html += '<p>Difference from goal weight: ' + f1(Math.abs(k(r.toGoal))) + ' ' + u + (r.toGoal === 0 ? ' (at goal)' : r.toGoal < 0 ? ' lower than current' : ' higher than current') + '.</p>';
       out.innerHTML = html + '<p>This tool does not predict future weight. Gradual, sustainable habits tend to work better than quick fixes. If you have health concerns or want a plan, consider talking with a qualified healthcare professional.</p>';
@@ -87,7 +87,9 @@
 
   /* ---------- Body Measurement Tracker ---------- */
   var KEY = 'bmg_records_v1', recs = [], editing = null, view = 'weightKg';
-  function load() { try { var d = JSON.parse(localStorage.getItem(KEY) || '[]'); recs = Array.isArray(d) ? d : []; return true; } catch (x) { recs = []; return false; } }
+  function validRec(r) { var ok = function (v, a, b) { return typeof v === 'number' && isFinite(v) && v >= a && v <= b; }; return r && typeof r === 'object' && typeof r.id === 'string' && C.parseDate(r.date) !== null && ok(r.weightKg, 1, 1000) && ok(r.waistCm, 1, 1000) && ok(r.hipsCm, 1, 1000) && ok(r.chestCm, 1, 1000); }
+  // Ignore damaged or hand-edited entries so one bad record cannot break the page.
+  function load() { try { var d = JSON.parse(localStorage.getItem(KEY) || '[]'); recs = Array.isArray(d) ? d.filter(validRec).map(function (r) { r.notes = typeof r.notes === 'string' ? r.notes : ''; return r; }) : []; return true; } catch (x) { recs = []; return false; } }
   function save() { try { localStorage.setItem(KEY, JSON.stringify(recs)); return true; } catch (x) { return false; } }
   function initTracker(form) {
     var unitSel = form.elements.units, list = $('#rec-list'), latest = $('#latest'), status = $('#tracker-status'), chart = $('#chart'), cform = form;

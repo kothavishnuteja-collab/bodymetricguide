@@ -1,0 +1,17 @@
+const C = require('../assets/js/core.js'); const assert = require('assert'); let n = 0;
+const t = (name, fn) => { fn(); n++; console.log('ok -', name); };
+const near = (a, b, e = 0.01) => assert(Math.abs(a - b) <= e, a + ' vs ' + b);
+t('BMI 70kg/175cm = 22.9', () => near(C.bmi(70, 175), 22.857, 0.001));
+t('BMI categories', () => { assert.equal(C.bmiCategory(18.4), 'Underweight'); assert.equal(C.bmiCategory(18.5), 'Healthy weight range'); assert.equal(C.bmiCategory(24.95), 'Healthy weight range'); assert.equal(C.bmiCategory(25), 'Overweight'); assert.equal(C.bmiCategory(30), 'Obesity category'); });
+t('Healthy range 170cm = 53.5–72.0 kg', () => { const r = C.healthyRange(170); near(r.lowKg, 53.465); near(r.highKg, 71.961); });
+t('Imperial: 5ft7in = 170.18cm; 150lb = 68.04kg', () => { near(C.ftInToCm(5, 7), 170.18); near(C.lbToKg(150), 68.0389, 0.001); near(C.kgToLb(68.0389), 150, 0.01); });
+t('cmToFtIn', () => { const r = C.cmToFtIn(170.18); assert.equal(r.ft, 5); near(r.inch, 7, 0.001); });
+t('WHtR NICE example 96.5/170 = 0.57 and inches 38/67', () => { near(C.whtr(96.5, 170), 0.5676); near(C.whtr(38, 67), 0.5672); });
+t('WHtR bands', () => { assert.equal(C.whtrBand(0.39).key, 'low'); assert.equal(C.whtrBand(0.4).key, 'ok'); assert.equal(C.whtrBand(0.499).key, 'ok'); assert.equal(C.whtrBand(0.5).key, 'mid'); assert.equal(C.whtrBand(0.6).key, 'high'); });
+t('Protein 70kg', () => { near(C.protein(70, 'general').lo, 56); const s = C.protein(70, 'strength'); near(s.lo, 84); near(s.hi, 112); near(C.protein(70, 'active').hi, 84); });
+t('Progress', () => { const a = C.parseDate('2026-01-01'), b = C.parseDate('2026-01-29'); const p = C.progress(80, 76, 72, a, b); near(p.change, -4); near(p.pct, -5); assert.equal(p.days, 28); near(p.perWeek, -1); near(p.toGoal, -4); });
+t('Same-day progress has no weekly rate', () => { const a = C.parseDate('2026-01-01'); assert.equal(C.progress(80, 79, null, a, a).perWeek, null); });
+t('Bad dates rejected', () => { assert.equal(C.parseDate('2026-02-31'), null); assert.equal(C.parseDate(''), null); });
+t('Validation', () => { assert.equal(C.num('', 1, 9), null); assert.equal(C.num('0', 1, 9), null); assert.equal(C.num('-3', 1, 9), null); assert.equal(C.num('abc', 1, 9), null); assert.equal(C.num('1e3', 1, 9999), null); assert.equal(C.num('70,5', 1, 999), 70.5); assert.equal(C.num('500', 20, 300), null); assert.equal(C.num(' 5.5 ', 1, 9), 5.5); });
+t('CSV escaping + formula guard', () => { const s = C.toCsv([{ date: '2026-01-01', weightKg: 70, waistCm: 80, hipsCm: 95, chestCm: 100, notes: '=1+1, "hi"' }]); assert(s.includes('"\'=1+1, ""hi"""')); assert(s.startsWith('"Date"')); });
+console.log(n + ' tests passed');
